@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{sequel_bulk_attributes}
-  s.version = ""
+  s.version = "0.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Corin Langosch"]
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "LICENSE",
      "README.rdoc",
      "Rakefile",
+     "VERSION",
      "lib/sequel_bulk_attributes.rb",
      "sequel_bulk_attributes.gemspec",
      "spec/sequel_bulk_attributes_spec.rb",
