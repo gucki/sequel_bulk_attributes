@@ -9,15 +9,22 @@ module Sequel
         model.associations.each do |association|
           association = model.association_reflection(association)
           next unless [:one_to_many].include?(association[:type])
+
           model.class_eval do
             define_method("#{association[:name]}=") do |list|
-              instance_variable_set("@_queued_#{association[:name]}", list)
+              cur = send(association[:name])
+              instance_variable_set("@_#{association[:name]}_add", list.reject{ |v| cur.detect{ |v1| v.pk == v1.pk } })
+              instance_variable_set("@_#{association[:name]}_remove", cur.reject{ |v| list.detect{ |v1| v.pk == v1.pk } })
+              cur.replace(list)
+
               after_save_hook do
                 singular_name = association[:name].to_s.singularize
-                send(association[:name]).each do |record|
-                  record.destroy
+
+                instance_variable_get("@_#{association[:name]}_remove").each do |record|
+                  send("remove_#{singular_name}", record)
                 end
-                instance_variable_get("@_queued_#{association[:name]}").each do |record|
+
+                instance_variable_get("@_#{association[:name]}_add").each do |record|
                   send("add_#{singular_name}", record)
                 end
               end
